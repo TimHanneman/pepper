@@ -44,7 +44,7 @@ def save_best_model(transducer_model, model_optimizer, hidden_size, layers, epoc
         'model_state_dict': transducer_model.state_dict(),
         'model_optimizer': model_optimizer.state_dict(),
         'hidden_size': hidden_size,
-        'gru_layers': layers,
+        'LSTM_layers': layers,
         'epochs': epoch,
     }, file_name)
     sys.stderr.write("[" + str(datetime.now().strftime('%m-%d-%Y %H:%M:%S')) + "] INFO: MODEL" + file_name + " SAVED SUCCESSFULLY.\n")
@@ -176,6 +176,10 @@ def train(train_file, test_file, batch_size, epoch_limit, gpu_mode, num_workers,
                 image_chunk = images[:, i:i+TrainOptions.TRAIN_WINDOW]
                 label_chunk = labels[:, i:i+TrainOptions.TRAIN_WINDOW]
 
+                #############################################################################################
+                ########################
+                #######################
+                #Just a Wild Guess that this too needs a hidden cell_state for lstm
                 output_, hidden = transducer_model(image_chunk, hidden)
 
                 loss = criterion(output_.contiguous().view(-1, num_classes), label_chunk.contiguous().view(-1))

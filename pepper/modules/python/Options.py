@@ -16,7 +16,7 @@ class TrainOptions(object):
     # slide correctly
     TRAIN_WINDOW = 100
     WINDOW_JUMP = 50
-    GRU_LAYERS = 1
+    LSTM_LAYERS = 1
     HIDDEN_SIZE = 128
 
 

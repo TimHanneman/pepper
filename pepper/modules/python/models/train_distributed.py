@@ -46,7 +46,7 @@ def save_best_model(transducer_model, model_optimizer, hidden_size, layers, epoc
         'model_state_dict': transducer_model.state_dict(),
         'model_optimizer': model_optimizer.state_dict(),
         'hidden_size': hidden_size,
-        'gru_layers': layers,
+        'LSTM_layers': layers,
         'epochs': epoch,
     }, file_name)
     sys.stderr.write("[" + str(datetime.now().strftime('%m-%d-%Y %H:%M:%S')) + "] INFO: MODEL SAVED SUCCESSFULLY.\n")
@@ -172,7 +172,9 @@ def train(train_file, test_file, batch_size, epoch_limit, gpu_mode, num_workers,
                 images = images.to(device_id)
                 labels = labels.to(device_id)
 
-            hidden = torch.zeros(images.size(0), 2 * TrainOptions.GRU_LAYERS, TrainOptions.HIDDEN_SIZE)
+            hidden = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
+            #
+            cell_state = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
 
             if gpu_mode:
                 hidden = hidden.to(device_id)
@@ -186,10 +188,12 @@ def train(train_file, test_file, batch_size, epoch_limit, gpu_mode, num_workers,
                 image_chunk = images[:, i:i+TrainOptions.TRAIN_WINDOW]
                 label_chunk = labels[:, i:i+TrainOptions.TRAIN_WINDOW]
 
-                output_, hidden = transducer_model(image_chunk, hidden)
+                #
+                output_, hidden, cell_state = transducer_model(image_chunk, hidden, cell_state)
 
                 loss = criterion(output_.contiguous().view(-1, num_classes), label_chunk.contiguous().view(-1))
-                loss.backward()
+                #without retaingraph=true this won't run
+                loss.backward(retain_graph=True)
 
                 model_optimizer.step()
                 total_loss += loss.item()

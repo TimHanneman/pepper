@@ -55,7 +55,7 @@ def predict(test_file, output_filename, model_path, batch_size, threads, num_wor
             sys.stderr.flush()
             images = images.type(torch.FloatTensor)
 
-            hidden = torch.zeros(images.size(0), 2 * TrainOptions.GRU_LAYERS, TrainOptions.HIDDEN_SIZE)
+            hidden = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
 
             prediction_base_counter = torch.zeros((images.size(0),
                                                    ImageSizeOptions.SEQ_LENGTH,

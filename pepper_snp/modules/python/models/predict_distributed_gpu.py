@@ -62,6 +62,11 @@ def predict(input_filepath, file_chunks, output_filepath, model_path, batch_size
                 # chunk all the data
                 image_chunk = images[:, chunk_start:chunk_end]
 
+                #######################################################################################################
+                ##############
+                ##############
+                ##############
+                #This is the lstm model that generates, calls for this, make LSTM
                 # run inference
                 output_base, hidden = transducer_model(image_chunk, hidden)
 

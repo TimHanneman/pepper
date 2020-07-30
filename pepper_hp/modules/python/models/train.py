@@ -42,7 +42,7 @@ def save_best_model(transducer_model, model_optimizer, hidden_size, layers, epoc
         'model_state_dict': transducer_model.state_dict(),
         'model_optimizer': model_optimizer.state_dict(),
         'hidden_size': hidden_size,
-        'gru_layers': layers,
+        'LSTM_layers': layers,
         'epochs': epoch,
     }, file_name)
     sys.stderr.write(TextColor.RED + "\nMODEL SAVED SUCCESSFULLY.\n" + TextColor.END)
@@ -140,7 +140,7 @@ def train(train_file, test_file, batch_size, epoch_limit, gpu_mode, num_workers,
                     images = images.cuda()
                     labels = labels.cuda()
 
-                hidden = torch.zeros(images.size(0), 2 * TrainOptions.GRU_LAYERS, TrainOptions.HIDDEN_SIZE)
+                hidden = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
 
                 if gpu_mode:
                     hidden = hidden.cuda()

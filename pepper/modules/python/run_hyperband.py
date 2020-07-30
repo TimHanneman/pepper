@@ -53,7 +53,7 @@ class WrapHyperband:
         self.batch_size = batch_size
         self.num_workers = num_workers
         self.hidden_size = TrainOptions.HIDDEN_SIZE
-        self.gru_layers = TrainOptions.GRU_LAYERS
+        self.gru_layers = TrainOptions.LSTM_LAYERS
 
     def get_params(self):
         """

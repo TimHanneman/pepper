@@ -44,7 +44,7 @@ def save_best_model(transducer_model, model_optimizer, hidden_size, layers, epoc
         'model_state_dict': transducer_model.state_dict(),
         'model_optimizer': model_optimizer.state_dict(),
         'hidden_size': hidden_size,
-        'gru_layers': layers,
+        'LSTM_layers': layers,
         'epochs': epoch,
     }, file_name)
     sys.stderr.write("[" + str(datetime.now().strftime('%m-%d-%Y %H:%M:%S')) + "] INFO: MODEL" + file_name + " SAVED SUCCESSFULLY.\n")

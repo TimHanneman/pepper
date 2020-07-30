@@ -28,15 +28,22 @@ class TrainModule:
         self.gpu_mode = gpu_mode
         self.log_directory = log_dir
         self.model_dir = model_dir
+        #Number of times to go through a complete set of data
         self.epochs = max_epochs
+        # Number of samples to put in at once (e.g. load to memory)
         self.batch_size = batch_size
+        #Num of workers tells pytorch how many sub processes to use
+        #Two definitely speeds things up, but more than two might not
         self.num_workers = num_workers
         self.retrain_model = retrain_model
         self.retrain_model_path = retrain_model_path
+        #Outputs the a stats dir
         self.stats_dir = stats_dir
+        ## of nodes in a layer
         self.hidden_size = TrainOptions.HIDDEN_SIZE
-        self.gru_layers = TrainOptions.GRU_LAYERS
+        self.gru_layers = TrainOptions.LSTM_LAYERS
         # {'l2': 1.4946789574136535e-05, 'lr': 0.000541365592065579}
+        #How much effect a round of training will have in changing the nnet
         self.learning_rate = 0.0001
         self.weight_decay = 0
 

@@ -62,10 +62,12 @@ def test(data_file, batch_size, gpu_mode, transducer_model, num_workers, gru_lay
                     images = images.cuda()
                     labels = labels.cuda()
 
-                hidden = torch.zeros(images.size(0), 2 * TrainOptions.GRU_LAYERS, TrainOptions.HIDDEN_SIZE)
+                hidden = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
+                cell_state = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
 
                 if gpu_mode:
                     hidden = hidden.cuda()
+                    cell_state = cell_state.cuda()
 
                 for i in range(0, ImageSizeOptions.SEQ_LENGTH, TrainOptions.WINDOW_JUMP):
                     if i + TrainOptions.TRAIN_WINDOW > ImageSizeOptions.SEQ_LENGTH:
@@ -73,7 +75,8 @@ def test(data_file, batch_size, gpu_mode, transducer_model, num_workers, gru_lay
 
                     image_chunk = images[:, i:i+TrainOptions.TRAIN_WINDOW]
                     label_chunk = labels[:, i:i+TrainOptions.TRAIN_WINDOW]
-                    output_, hidden = transducer_model(image_chunk, hidden)
+                    #
+                    output_, hidden, cell_state = transducer_model(image_chunk, hidden, cell_state)
 
                     loss = criterion(output_.contiguous().view(-1, num_classes), label_chunk.contiguous().view(-1))
 

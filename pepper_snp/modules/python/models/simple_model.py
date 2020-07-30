@@ -9,21 +9,30 @@ class TransducerGRU(nn.Module):
         self.bidirectional = bidirectional
         self.num_layers = gru_layers
         self.num_classes = num_classes
+        ###########################################################################
+        ##################3
+        ###################
+        #Change from nn.GRU to LSTM
+        #Gives three things, get out thring things
         self.gru_encoder = nn.GRU(image_features,
                                   hidden_size,
                                   num_layers=self.num_layers,
                                   bidirectional=bidirectional,
                                   batch_first=True)
+        #Change to LSTM
         self.gru_decoder = nn.GRU(2 * hidden_size,
                                   hidden_size,
                                   num_layers=self.num_layers,
                                   bidirectional=bidirectional,
                                   batch_first=True)
-        # self.gru_encoder.flatten_parameters()
-        # self.gru_decoder.flatten_parameters()
+        # self.LSTM_encoder.flatten_parameters()
+        # self.LSTM_decoder.flatten_parameters()
         self.dense1 = nn.Linear(self.hidden_size * 2, self.num_classes)
         # self.dense2 = nn.Linear(self.hidden_size, self.num_classes)
 
+    #This method is the model, x is input and hidden is the hidden layer
+    #Forward method will have 3 parameters x hidden cell state, change LSTM_encoder to similar to torch lstm
+    #Follow the example given on the website
     def forward(self, x, hidden):
         hidden = hidden.transpose(0, 1).contiguous()
         self.gru_encoder.flatten_parameters()

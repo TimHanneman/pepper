@@ -50,7 +50,7 @@ class ModelHandler:
     def load_model_for_training(model_path, input_channels, seq_len, num_classes):
         checkpoint = torch.load(model_path, map_location='cpu')
         hidden_size = checkpoint['hidden_size']
-        gru_layers = checkpoint['gru_layers']
+        gru_layers = checkpoint['LSTM_layers']
         epochs = checkpoint['epochs']
         encoder_model, decoder_model = ModelHandler.get_new_model(input_channels=input_channels,
                                                                   gru_layers=gru_layers,
@@ -88,7 +88,7 @@ class ModelHandler:
     def load_simple_model_for_training(model_path, input_channels, image_features, seq_len, num_classes):
         checkpoint = torch.load(model_path, map_location='cpu')
         hidden_size = checkpoint['hidden_size']
-        gru_layers = checkpoint['gru_layers']
+        gru_layers = checkpoint['LSTM_layers']
         epochs = checkpoint['epochs']
 
         transducer_model = ModelHandler.get_new_gru_model(input_channels=input_channels,

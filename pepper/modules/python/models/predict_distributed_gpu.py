@@ -52,12 +52,16 @@ def predict(input_filepath, file_chunks, output_filepath, model_path, batch_size
         for contig, contig_start, contig_end, chunk_id, images, position, index in data_loader:
             sys.stderr.flush()
             images = images.type(torch.FloatTensor)
-            hidden = torch.zeros(images.size(0), 2 * TrainOptions.GRU_LAYERS, TrainOptions.HIDDEN_SIZE)
+            hidden = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
+            #
+            cell_state = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
 
             prediction_base_tensor = torch.zeros((images.size(0), images.size(1), ImageSizeOptions.TOTAL_LABELS))
 
             images = images.to(device_id)
             hidden = hidden.to(device_id)
+            #
+            cell_state = cell_state.to(device_id)
             prediction_base_tensor = prediction_base_tensor.to(device_id)
 
             for i in range(0, ImageSizeOptions.SEQ_LENGTH, TrainOptions.WINDOW_JUMP):
@@ -69,7 +73,7 @@ def predict(input_filepath, file_chunks, output_filepath, model_path, batch_size
                 image_chunk = images[:, chunk_start:chunk_end]
 
                 # run inference
-                output_base, hidden = transducer_model(image_chunk, hidden)
+                output_base, hidden, cell_state = transducer_model(image_chunk, hidden, cell_state)
 
                 # now calculate how much padding is on the top and bottom of this chunk so we can do a simple
                 # add operation

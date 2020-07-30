@@ -48,7 +48,7 @@ def predict(test_file, output_filename, model_path, batch_size, num_workers, gpu
         for contig, contig_start, contig_end, chunk_id, images, position, index in tqdm(test_loader, ncols=50):
             images = images.type(torch.FloatTensor)
 
-            hidden = torch.zeros(images.size(0), 2 * TrainOptions.GRU_LAYERS, TrainOptions.HIDDEN_SIZE)
+            hidden = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
 
             prediction_base_tensor = torch.zeros((images.size(0), images.size(1), ImageSizeOptions.TOTAL_LABELS))
 

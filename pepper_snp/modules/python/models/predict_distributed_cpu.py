@@ -56,6 +56,11 @@ def predict(input_filepath, file_chunks, output_filepath, model_path, batch_size
                 # run inference on onnx mode, which takes numpy inputs
                 ort_inputs = {ort_session.get_inputs()[0].name: image_chunk.cpu().numpy(),
                               ort_session.get_inputs()[1].name: hidden.cpu().numpy()}
+                #####################################################################################################
+                #########################
+                ########################
+                ########################
+                #ort_session.run calls the forward method, change ort to have another input to match lstm cell_state to send the forward method
                 output_base, hidden = ort_session.run(None, ort_inputs)
                 output_base = torch.from_numpy(output_base)
                 hidden = torch.from_numpy(hidden)
