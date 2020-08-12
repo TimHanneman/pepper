@@ -178,6 +178,7 @@ def train(train_file, test_file, batch_size, epoch_limit, gpu_mode, num_workers,
 
             if gpu_mode:
                 hidden = hidden.to(device_id)
+                cell_state = cell_state.to(device_id)
 
             for i in range(0, ImageSizeOptions.SEQ_LENGTH, TrainOptions.WINDOW_JUMP):
                 model_optimizer.zero_grad()
@@ -193,12 +194,13 @@ def train(train_file, test_file, batch_size, epoch_limit, gpu_mode, num_workers,
 
                 loss = criterion(output_.contiguous().view(-1, num_classes), label_chunk.contiguous().view(-1))
                 #without retaingraph=true this won't run
-                loss.backward(retain_graph=True)
+                loss.backward()
 
                 model_optimizer.step()
                 total_loss += loss.item()
                 total_images += image_chunk.size(0)
                 hidden = hidden.detach()
+                cell_state = cell_state.detach()
 
             # update the progress bar
             avg_loss = (total_loss / total_images) if total_images else 0
