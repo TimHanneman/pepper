@@ -70,7 +70,7 @@ def predict(input_filepath, file_chunks, output_filepath, batch_size, num_worker
                               ort_session.get_inputs()[2].name: cell_state.cpu().numpy()}
                 #
                 #output_base, hidden, cell_state = ort_session.run(None, ort_inputs)
-                output_base, hidden, cell_state = ort_session.run(None, ort_inputs, cell_state)
+                output_base, hidden, cell_state = ort_session.run(None, ort_inputs)
                 output_base = torch.from_numpy(output_base)
                 hidden = torch.from_numpy(hidden)
                 #
