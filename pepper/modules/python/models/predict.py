@@ -49,7 +49,7 @@ def predict(test_file, output_filename, model_path, batch_size, num_workers, gpu
             images = images.type(torch.FloatTensor)
 
             hidden = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
-
+            cell_state = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
             prediction_base_tensor = torch.zeros((images.size(0), images.size(1), ImageSizeOptions.TOTAL_LABELS))
 
             if gpu_mode:
@@ -66,7 +66,7 @@ def predict(test_file, output_filename, model_path, batch_size, num_workers, gpu
                 image_chunk = images[:, chunk_start:chunk_end]
 
                 # run inference
-                output_base, hidden = transducer_model(image_chunk, hidden)
+                output_base, hidden, cell_state = transducer_model(image_chunk, hidden, cell_state)
 
                 # now calculate how much padding is on the top and bottom of this chunk so we can do a simple
                 # add operation

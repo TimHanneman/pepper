@@ -50,7 +50,7 @@ def predict(input_filepath, file_chunks, output_filepath, batch_size, num_worker
 
             hidden = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
             #
-            #cell_state = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
+            cell_state = torch.zeros(images.size(0), 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
 
             prediction_base_tensor = torch.zeros((images.size(0), images.size(1), ImageSizeOptions.TOTAL_LABELS))
 
@@ -69,8 +69,8 @@ def predict(input_filepath, file_chunks, output_filepath, batch_size, num_worker
                               ort_session.get_inputs()[1].name: hidden.cpu().numpy(),
                               ort_session.get_inputs()[2].name: cell_state.cpu().numpy()}
                 #
-                output_base, hidden, cell_state = ort_session.run(None, ort_inputs)
-                #output_base, hidden = ort_session.run(None, ort_inputs)
+                #output_base, hidden, cell_state = ort_session.run(None, ort_inputs)
+                output_base, hidden, cell_state = ort_session.run(None, ort_inputs, cell_state)
                 output_base = torch.from_numpy(output_base)
                 hidden = torch.from_numpy(hidden)
                 #
@@ -174,13 +174,14 @@ def predict_distributed_cpu(filepath, file_chunks, output_filepath, model_path, 
     x = torch.zeros(1, TrainOptions.TRAIN_WINDOW, ImageSizeOptions.IMAGE_HEIGHT)
     h = torch.zeros(1, 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
     #
-    #ce = torch.zeros(1, 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
+    ce = torch.zeros(1, 2 * TrainOptions.LSTM_LAYERS, TrainOptions.HIDDEN_SIZE)
+
 
     if not os.path.isfile(model_path + ".onnx"):
         sys.stderr.write("INFO: SAVING MODEL TO ONNX\n")
         #
         #torch.onnx.export(transducer_model, (x, h),
-        torch.onnx.export(transducer_model, (x, h),
+        torch.onnx.export(transducer_model, (x, h, ce),
                           model_path + ".onnx",
                           training=False,
                           opset_version=10,
