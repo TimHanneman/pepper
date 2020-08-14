@@ -181,7 +181,7 @@ def predict_distributed_cpu(filepath, file_chunks, output_filepath, model_path, 
         sys.stderr.write("INFO: SAVING MODEL TO ONNX\n")
         #
         #torch.onnx.export(transducer_model, (x, h),
-        torch.onnx.export(transducer_model, (x, h),
+        torch.onnx.export(transducer_model, (x, h, ce),
                           model_path + ".onnx",
                           training=False,
                           opset_version=10,
